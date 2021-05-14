@@ -1,0 +1,3 @@
+<li *ngFor="let category of productCategories">
+    <a routerLink="/category/{{category.id}}" routerLinkActive="active-link">{{ category.categoryName }}</a>
+</li>
