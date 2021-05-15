@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CartItem } from 'src/app/model/cart-item';
 import { Product } from 'src/app/model/product';
+import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
 
 
@@ -18,10 +20,12 @@ export class ProductListComponent implements OnInit {
 
   //propiedasdes para la paginacion
   thePageNumber: number = 1;
-  thePageSize: number = 10;
+  thePageSize: number = 5;
   theTotalElements: number = 0;
 
-  constructor(private productService: ProductService, private route: ActivatedRoute) { }
+  previousKeyword: string = null;
+
+  constructor(private productService: ProductService, private cartService: CartService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(() => {
@@ -68,7 +72,25 @@ export class ProductListComponent implements OnInit {
 
   handleSearchProducts(){
     const theKeyword: string = this.route.snapshot.paramMap.get('keyword');
-    this.productService.searchProducts(theKeyword).subscribe(data => this.products = data);
+    if(this.previousKeyword != theKeyword){
+      this.thePageNumber = 1;
+    }
+    this.previousKeyword = theKeyword;
+    // console.log(`keyword=${theKeyword}, thePageNumber=${this.thePageNumber}`);
+    this.productService.searchProductsPaginate(this.thePageNumber - 1, this.thePageSize, theKeyword)
+      .subscribe(this.processResult());
+  }
+
+  updatePageSize(pageSize: number){
+    this.thePageSize = pageSize;
+    this.thePageNumber = 1;
+    this.listProducts();
+  }
+
+  addToCart(product : Product){
+    console.log(product);
+    const theCartItem = new CartItem(product);
+    this.cartService.addToCart(theCartItem);
   }
 
 }

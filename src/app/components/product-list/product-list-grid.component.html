@@ -11,7 +11,7 @@
                             <h1>{{ product.name }}</h1>
                         </a>
                         <div class="price">{{ product.unitPrice | currency : 'USD'}}</div>
-                        <a href="#" class="primary-btn">Add to cart</a>
+                        <button (click)="addToCart(product)" class="btn btn-primary btn-sm">Add to cart</button>
                     </div>
                 </div>
                 <!--if product is empty display a message-->
@@ -25,20 +25,23 @@
                     <div class="col-md-6"></div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-6" style="padding-left: 30%;">
+                            <div class="col-md-6" style="padding-left: 1%;">
                                 <ngb-pagination [(page)]="thePageNumber"
                                                 [pageSize]="thePageSize"
                                                 [collectionSize]="theTotalElements"
+                                                [maxSize]="5"
+                                                [boundaryLinks]="true"
                                                 (pageChange)="listProducts()">
                                 </ngb-pagination>
                             </div>
-                            <div class="col-md-3 mt-2" style="text-align: right;">
+                            <div class="col-md-4 mt-2" style="text-align: right;">
                                 <span class="mr-2">Page size</span>
-                                <select>
+                                <select (change)="updatePageSize($event.target.value)">
+                                    <option>2</option>
                                     <option selected="true">5</option>
-                                    <option value="">10</option>
-                                    <option value="">20</option>
-                                    <option value="">50</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                    <option>50</option>
                                 </select>
                             </div>
                         </div>
